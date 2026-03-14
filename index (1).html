@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KısaMotivason — Instagram Otorite Programı</title>
+  <meta name="description" content="90 günde Instagram'da sıfırdan otoriteye. Sistematik, veri odaklı büyüme stratejisiyle kişisel markandaki otoriteyi inşa et.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0A0A0F;
+      --surface: #111118;
+      --surface2: #18181F;
+      --accent: #FF3A5C;
+      --accent2: #FF7043;
+      --text: #F0EEF8;
+      --muted: #8884A0;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+    .noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    section, header, footer, nav, .stats-bar, .form-section { position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-size: 0.85rem; color: var(--muted); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #fff; border: none;
+      padding: 0.6rem 1.4rem; border-radius: 6px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 8rem 2.5rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-orb {
+      position: absolute; width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,58,92,0.12) 0%, transparent 70%);
+      top: -200px; right: -200px; pointer-events: none;
+    }
+    .hero-orb2 {
+      position: absolute; width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,112,67,0.08) 0%, transparent 70%);
+      bottom: -100px; left: 10%; pointer-events: none;
+    }
+    .hero-inner { max-width: 900px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,58,92,0.1); border: 1px solid rgba(255,58,92,0.25);
+      color: #FF7A8A; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.45rem 1rem; border-radius: 100px; margin-bottom: 2rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted); line-height: 1.7; max-width: 540px;
+      font-weight: 300; margin-bottom: 2.5rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      background: var(--accent); color: #fff; border: none;
+      padding: 0.9rem 2rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,58,92,0.3); }
+
+    .btn-ghost {
+      background: transparent; color: var(--text); border: 1px solid var(--border);
+      padding: 0.9rem 2rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; }
+    .stat-num span { color: var(--accent); }
+    .stat-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+
+    /* SECTIONS */
+    .section { padding: 6rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); font-weight: 500; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 480px; }
+
+    /* HOW IT WORKS */
+    .steps {
+      margin-top: 4rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
+    }
+    .step {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2rem 1.5rem; transition: border-color 0.3s;
+    }
+    .step:hover { border-color: rgba(255,58,92,0.3); }
+    .step-num {
+      font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800;
+      color: rgba(255,58,92,0.15); line-height: 1; margin-bottom: 1rem;
+    }
+    .step h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.6rem; }
+    .step p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* PILLARS */
+    .pillars {
+      margin-top: 4rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;
+    }
+    .pillar {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem 1.2rem; transition: all 0.2s;
+    }
+    .pillar:hover { transform: translateY(-3px); border-color: rgba(255,58,92,0.25); }
+    .pillar-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
+    .pillar h4 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .pillar p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* PHASES */
+    .phases { margin-top: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .phase {
+      display: grid; grid-template-columns: 140px 1fr; gap: 2rem; align-items: start;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2rem; transition: border-color 0.3s;
+    }
+    .phase:hover { border-color: rgba(255,58,92,0.25); }
+    .phase-label { text-align: center; }
+    .phase-badge {
+      display: inline-block; padding: 0.4rem 1rem; border-radius: 100px;
+      font-size: 0.75rem; font-family: 'Syne', sans-serif; font-weight: 700;
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .p1 .phase-badge { background: rgba(255,58,92,0.15); color: #FF7A8A; }
+    .p2 .phase-badge { background: rgba(83,72,183,0.15); color: #A59CF5; }
+    .p3 .phase-badge { background: rgba(255,112,67,0.15); color: #FFB08A; }
+    .phase-weeks { font-size: 0.78rem; color: var(--muted); }
+    .phase-content h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem;
+    }
+    .phase-content p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+    .phase-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-size: 0.75rem; padding: 0.3rem 0.75rem; border-radius: 6px;
+      background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .tcard {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.8rem;
+    }
+    .tcard-stars { color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 1rem; }
+    .tcard p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; font-style: italic; }
+    .tcard-author { display: flex; align-items: center; gap: 10px; }
+    .tcard-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,58,92,0.2); display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--accent);
+      flex-shrink: 0;
+    }
+    .tcard-name { font-size: 0.85rem; font-weight: 500; }
+    .tcard-role { font-size: 0.75rem; color: var(--muted); }
+
+    /* FORM */
+    .form-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 6rem 2.5rem;
+    }
+    .form-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+    .form-box {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem; margin-top: 2.5rem; text-align: left;
+    }
+    .form-row { margin-bottom: 1.2rem; }
+    .form-row label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.75rem 1rem; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus { border-color: rgba(255,58,92,0.4); }
+    .form-row select option { background: #18181F; color: #F0EEF8; }
+    .form-row textarea { resize: vertical; min-height: 90px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-submit {
+      width: 100%; background: var(--accent); color: #fff; border: none;
+      padding: 1rem; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .form-note { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 1rem; line-height: 1.5; }
+
+    .wa-direct {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #25D366; color: #fff; text-decoration: none;
+      padding: 0.55rem 1.1rem; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 500; transition: opacity 0.2s;
+    }
+    .wa-direct:hover { opacity: 0.85; }
+
+    /* SUCCESS */
+    .success-msg {
+      display: none; text-align: center; padding: 2rem;
+      background: rgba(37,211,102,0.08); border: 1px solid rgba(37,211,102,0.25);
+      border-radius: 12px; margin-top: 1rem;
+    }
+    .success-msg .s-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .success-msg h4 { font-family: 'Syne', sans-serif; font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .success-msg p { font-size: 0.88rem; color: var(--muted); }
+
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      background: #25D366; color: #fff;
+      width: 58px; height: 58px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,0.45); }
+    .wa-float svg { width: 28px; height: 28px; fill: #fff; }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy { font-size: 0.8rem; color: var(--muted); }
+
+    /* SCROLL ANIM */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .section { padding: 4rem 1.5rem; }
+      .stats-bar { padding: 1.5rem; }
+      .stats-inner { gap: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .phase { grid-template-columns: 1fr; }
+      .form-section { padding: 4rem 1.5rem; }
+      .form-box { padding: 1.5rem; }
+      footer { padding: 2rem 1.5rem; text-align: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.instagram.com/kisamotivasyon?igsh=MWgzaHk2eHQ4MjIxaA%3D%3D&utm_source=qr" target="_blank" style="text-decoration:none;color:inherit;"><div class="nav-logo">KISA<span>MOTİVASYON</span></div></a>
+  <div class="nav-links">
+    <a href="#nasil-calisir">Nasıl Çalışır</a>
+    <a href="#plan">90 Günlük Plan</a>
+    <a href="#kayit">Kayıt Ol</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('kayit').scrollIntoView({behavior:'smooth'})">Ücretsiz Başla</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      90 Günlük Dönüşüm Programı
+    </div>
+    <h1>Instagram'da harcadığın<br>eforu <em>gerçek sonuçlara</em><br>dönüştür.</h1>
+    <p class="hero-sub">Sıfırdan 10.000+ takipçiye. Sistematik, veri odaklı ve uygulanabilir bir büyüme stratejisiyle kişisel markandaki otoriteyi inşa et.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('kayit').scrollIntoView({behavior:'smooth'})">
+        Hemen Başla — Ücretsiz
+        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
+        </svg>
+      </button>
+      <a class="btn-ghost" href="https://wa.me/905421020989?text=Merhaba%2C%20GrowthSystem%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        WhatsApp'tan Ulaş
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-num">10K<span>+</span></div><div class="stat-label">Hedef Takipçi</div></div>
+    <div class="stat"><div class="stat-num">90</div><div class="stat-label">Gün Sprint</div></div>
+    <div class="stat"><div class="stat-num">5<span>x</span></div><div class="stat-label">Etkileşim Artışı</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Faz — Sıfır'dan Otoriteye</div></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="nasil-calisir" style="background: var(--bg);">
+  <div class="section fade-up">
+    <div class="section-tag">Nasıl Çalışır</div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+      <h2 class="section-title">Sistem, tahmin değil<br>veri ile çalışır.</h2>
+      <p class="section-sub">Her adım kitle psikolojisine, Instagram algoritmasına ve kanıtlanmış viral formüllere dayanır.</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">01</div>
+        <h3>Marka Konumlandırması</h3>
+        <p>Bio, görsel kimlik ve ses tonu ile hedef kitlenin seni saniyeler içinde anlamasını sağlıyoruz.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">02</div>
+        <h3>İçerik Sistemi Kurulumu</h3>
+        <p>5 içerik sütunu + batch üretim modeliyle tutarlı ve sürdürülebilir bir içerik motoru kuruyoruz.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">03</div>
+        <h3>Viral Döngü Aktivasyonu</h3>
+        <p>Save → Share → Comment hiyerarşisi ile algoritmayı aktif çalıştıran içerikler üretiyoruz.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">04</div>
+        <h3>Otorite Lansmanı</h3>
+        <p>90. günde ücretli ürün, topluluk ve medya görünürlüğü ile güven temelli bir gelir akışı kuruyoruz.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PILLARS -->
+<div style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section fade-up">
+    <div class="section-tag">İçerik Mimarisi</div>
+    <h2 class="section-title">5 İçerik Sütunu</h2>
+    <div class="pillars">
+      <div class="pillar fade-up">
+        <div class="pillar-icon">🚀</div>
+        <h4>Büyüme Taktikleri</h4>
+        <p>Algoritma, Reels, hashtag optimizasyonu</p>
+      </div>
+      <div class="pillar fade-up">
+        <div class="pillar-icon">👤</div>
+        <h4>Kişisel Marka</h4>
+        <p>Kurucu hikayesi, değerler, behind-the-scenes</p>
+      </div>
+      <div class="pillar fade-up">
+        <div class="pillar-icon">🧠</div>
+        <h4>İçerik Psikolojisi</h4>
+        <p>Viral psikoloji ve hook formülleri</p>
+      </div>
+      <div class="pillar fade-up">
+        <div class="pillar-icon">🔍</div>
+        <h4>Gerçek Analizler</h4>
+        <p>Canlı hesap incelemeleri ve case study</p>
+      </div>
+      <div class="pillar fade-up">
+        <div class="pillar-icon">🤝</div>
+        <h4>Topluluk & S/C</h4>
+        <p>AMA, takipçi başarıları, aidiyeti artırma</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 90 GUN PLAN -->
+<div id="plan" style="background: var(--bg);">
+  <div class="section fade-up">
+    <div class="section-tag">90 Günlük Yol Haritası</div>
+    <h2 class="section-title">Üç fazda sıfırdan<br>otoriteye.</h2>
+    <div class="phases">
+      <div class="phase p1 fade-up">
+        <div class="phase-label">
+          <div class="phase-badge">FAZ 1</div>
+          <div class="phase-weeks">Hafta 1–4</div>
+        </div>
+        <div class="phase-content">
+          <h3>Temel Kurulum</h3>
+          <p>Marka kimliği, görsel sistem, içerik sütunları ve ilk feed lansmanı. Algoritma tarafından tanınmaya başlamak için temel altyapıyı kuruyoruz.</p>
+          <div class="phase-tags">
+            <span class="tag">Bio optimizasyonu</span>
+            <span class="tag">Feed lansmanı</span>
+            <span class="tag">İlk Reels</span>
+            <span class="tag">Rakip analizi</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase p2 fade-up">
+        <div class="phase-label">
+          <div class="phase-badge">FAZ 2</div>
+          <div class="phase-weeks">Hafta 5–8</div>
+        </div>
+        <div class="phase-content">
+          <h3>İvme & Büyüme</h3>
+          <p>Collaboration'lar, viral içerik deneyleri, email listesi kurulumu ve pre-launch hazırlığı. Kitleyi ve etkileşim momentumunu artırıyoruz.</p>
+          <div class="phase-tags">
+            <span class="tag">Micro-collab</span>
+            <span class="tag">Hot take serisi</span>
+            <span class="tag">Lead magnet</span>
+            <span class="tag">LinkedIn sinerji</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase p3 fade-up">
+        <div class="phase-label">
+          <div class="phase-badge">FAZ 3</div>
+          <div class="phase-weeks">Hafta 9–12</div>
+        </div>
+        <div class="phase-content">
+          <h3>Otorite Lansmanı</h3>
+          <p>Ücretli ürün lansmanı, PR kampanyası, topluluk kimliği ve 90 gün grand reveal. Hesabı tanınan bir otorite markaya dönüştürüyoruz.</p>
+          <div class="phase-tags">
+            <span class="tag">Ücretli kurs</span>
+            <span class="tag">Instagram Live</span>
+            <span class="tag">Media kit</span>
+            <span class="tag">Grand reveal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section fade-up">
+    <div class="section-tag">Sonuçlar</div>
+    <h2 class="section-title">Sistem işe yarıyor.</h2>
+    <div class="testimonials">
+      <div class="tcard fade-up">
+        <div class="tcard-stars">★★★★★</div>
+        <p>"90 günde 0'dan 4.800 takipçiye ulaştım. Reels stratejisi gerçekten farklı — ilk haftadan itibaren keşfet sayfasında yer almaya başladım."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">AK</div>
+          <div>
+            <div class="tcard-name">Ahmet K.</div>
+            <div class="tcard-role">Freelance Tasarımcı</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard fade-up">
+        <div class="tcard-stars">★★★★★</div>
+        <p>"İçerik sistemi hayatımı değiştirdi. Artık her gün ne paylaşacağımı düşünmek yerine sisteme bakıyorum. Etkileşimim 3 haftada 4 katına çıktı."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">ZY</div>
+          <div>
+            <div class="tcard-name">Zeynep Y.</div>
+            <div class="tcard-role">Girişimci</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard fade-up">
+        <div class="tcard-stars">★★★★★</div>
+        <p>"İlk ücretli ürünümü 11. haftada launch ettim ve 72 saatte 38 satış yaptım. Bu plan gerçekten çalışıyor — sırayla uygulamanız yeterli."</p>
+        <div class="tcard-author">
+          <div class="tcard-avatar">MO</div>
+          <div>
+            <div class="tcard-name">Mert O.</div>
+            <div class="tcard-role">İçerik Üreticisi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM / KAYIT -->
+<div class="form-section" id="kayit">
+  <div class="form-inner">
+    <div class="section-tag" style="text-align:center">Başvuru Formu</div>
+    <h2 class="section-title" style="text-align:center">Ücretsiz başla,<br>90 günde sonuç al.</h2>
+    <p style="color:var(--muted);font-size:0.9rem;margin-top:0.5rem;">Formu doldur, seni hemen WhatsApp üzerinden arayalım.</p>
+    <div class="form-box">
+      <div id="form-wrap">
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Ad Soyad</label>
+            <input type="text" id="fname" placeholder="Adın Soyadın">
+          </div>
+          <div class="form-row">
+            <label>WhatsApp Numarası</label>
+            <input type="tel" id="fphone" placeholder="+90 5XX XXX XX XX">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Instagram Kullanıcı Adı</label>
+          <input type="text" id="finsta" placeholder="@kullaniciadin">
+        </div>
+        <div class="form-row">
+          <label>E-posta Adresi</label>
+          <input type="email" id="femail" placeholder="ornek@email.com">
+        </div>
+        <div class="form-row">
+          <label>Şu anki takipçi sayın</label>
+          <select id="ffollowers">
+            <option value="">Seç</option>
+            <option>0 – 500</option>
+            <option>500 – 2.000</option>
+            <option>2.000 – 10.000</option>
+            <option>10.000+</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Hedefin nedir? (kısaca)</label>
+          <textarea id="fgoal" placeholder="Örn: 3 ayda 5K takipçiye ulaşmak, ilk ürünümü launch etmek..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm()">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          WhatsApp'tan Kayıt Ol
+        </button>
+        <p class="form-note">Bilgilerin güvende. Spam yok, yalnızca büyüme odaklı içerik.</p>
+      </div>
+      <div class="success-msg" id="success-msg">
+        <div class="s-icon">✅</div>
+        <h4>Başvurun alındı!</h4>
+        <p>Seni en kısa sürede WhatsApp üzerinden arayacağız. Hazır ol! 🚀</p>
+      </div>
+    </div>
+    <div style="margin-top:2rem; display:flex; align-items:center; justify-content:center; gap:0.8rem; flex-wrap:wrap;">
+      <span style="font-size:0.82rem; color:var(--muted);">Hemen konuşmak ister misin?</span>
+      <a class="wa-direct" href="https://wa.me/905421020989?text=Merhaba%2C%20GrowthSystem%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank">
+        <svg viewBox="0 0 24 24" fill="#fff" width="16" height="16">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        +90 542 102 09 89
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:var(--surface);border-top:1px solid var(--border);padding:3.5rem 2.5rem 2rem;">
+
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <!-- 4 col grid -->
+    <div style="display:grid;grid-template-columns:1.8fr 1fr 1.2fr 1.1fr;gap:2.5rem;align-items:start;margin-bottom:2.5rem;">
+
+      <!-- Marka -->
+      <div>
+        <a href="https://www.instagram.com/kisamotivasyon?igsh=MWgzaHk2eHQ4MjIxaA%3D%3D&utm_source=qr" target="_blank" style="text-decoration:none;color:inherit;">
+          <div class="footer-logo" style="font-size:1.2rem;margin-bottom:0.9rem;letter-spacing:-0.03em;">KISA<span>MOTİVASYON</span></div>
+        </a>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;">
+          Sosyal medyada harcadığın eforu sistematik büyüme stratejisiyle gerçek sonuçlara dönüştürüyoruz.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <a href="https://wa.me/905421020989" target="_blank" style="width:34px;height:34px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" fill="#fff" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/kisamotivasyon?igsh=MWgzaHk2eHQ4MjIxaA%3D%3D&utm_source=qr" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,58,92,0.12);border:1px solid rgba(255,58,92,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" fill="#FF7A8A" width="15" height="15"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Program -->
+      <div>
+        <p style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:1rem;">Program</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem;">
+          <li><a href="#nasil-calisir" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">Nasıl Çalışır</a></li>
+          <li><a href="#plan" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">90 Günlük Plan</a></li>
+          <li><a href="#kayit" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">Başvuru Formu</a></li>
+          <li><a href="#kayit" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">Ücretsiz Başla</a></li>
+          <li><a href="#kayit" style="font-size:0.82rem;color:var(--muted);text-decoration:none;">Sonuçlar</a></li>
+        </ul>
+      </div>
+
+      <!-- İçerik -->
+      <div>
+        <p style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:1rem;">İçerik</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem;">
+          <li style="font-size:0.82rem;color:var(--muted);">Algoritma, Reels ve hashtag</li>
+          <li style="font-size:0.82rem;color:var(--muted);">Kurucu hikayesi ve otorite</li>
+          <li style="font-size:0.82rem;color:var(--muted);">Hook formülleri ve viral</li>
+          <li style="font-size:0.82rem;color:var(--muted);">Canlı hesap analizleri</li>
+          <li style="font-size:0.82rem;color:var(--muted);">AMA ve topluluk oturumları</li>
+        </ul>
+      </div>
+
+      <!-- İletişim -->
+      <div>
+        <p style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:1rem;">İletişim</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.75rem;">
+          <li>
+            <a href="https://wa.me/905421020989" target="_blank" style="font-size:0.82rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:7px;">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              +90 542 102 09 89
+            </a>
+          </li>
+          <li style="font-size:0.82rem;color:var(--muted);display:flex;align-items:center;gap:7px;">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Türkiye
+          </li>
+          <li style="font-size:0.82rem;color:var(--muted);display:flex;align-items:center;gap:7px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Her gün 09:00 – 22:00
+          </li>
+          <li style="margin-top:0.4rem;">
+            <a href="#kayit" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:0.5rem 1.1rem;border-radius:6px;font-size:0.8rem;font-weight:500;">
+              Hemen Başvur
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Alt çizgi -->
+    <div style="border-top:1px solid var(--border);padding-top:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;">
+      <div class="footer-copy">© 2025 KısaMotivason — Tüm hakları saklıdır.</div>
+      <div style="display:flex;gap:1.5rem;">
+        <span style="font-size:0.78rem;color:var(--muted);">Gizlilik Politikası</span>
+        <span style="font-size:0.78rem;color:var(--muted);">Kullanım Şartları</span>
+        <span style="font-size:0.78rem;color:var(--muted);">KVKK</span>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- WhatsApp Floating Button -->
+<a class="wa-float" href="https://wa.me/905421020989?text=Merhaba%2C%20GrowthSystem%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" title="WhatsApp ile ulaş">
+  <svg viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<script>
+  function submitForm() {
+    var name = document.getElementById('fname').value.trim();
+    var phone = document.getElementById('fphone').value.trim();
+    var insta = document.getElementById('finsta').value.trim();
+    var followers = document.getElementById('ffollowers').value;
+    var goal = document.getElementById('fgoal').value.trim();
+
+    if (!name || !phone) {
+      alert('Ad Soyad ve WhatsApp numaranı girmeden devam edemezsin.');
+      return;
+    }
+
+    var email = document.getElementById('femail').value.trim();
+    var msg = encodeURIComponent(
+      'Merhaba! KısaMotivason başvurusu yapmak istiyorum.\n\n' +
+      'İsim: ' + name + '\n' +
+      'Telefon: ' + phone + '\n' +
+      'E-posta: ' + (email || 'belirtilmedi') + '\n' +
+      'Instagram: ' + (insta || 'belirtilmedi') + '\n' +
+      'Takipçi: ' + (followers || 'belirtilmedi') + '\n' +
+      'Hedef: ' + (goal || 'belirtilmedi')
+    );
+
+    window.open('https://wa.me/905421020989?text=' + msg, '_blank');
+
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) {
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
